@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using GameEngine.State;
+
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -12,14 +14,19 @@ namespace GameEngine
         private SpriteBatch _spriteBatch;
         private RenderTarget2D _renderTarget;
         private Rectangle _renderScaleRectangle;
+        private BaseGameState _currentGameState;
 
         public MainGame()
         {
             _graphics = new GraphicsDeviceManager(this);
+            _graphics.PreferredBackBufferWidth = 1024;
+            _graphics.PreferredBackBufferHeight = 768;
+            _graphics.IsFullScreen = true;
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
         }
 
+        #region Initialization/Loading
         protected override void Initialize()
         {
             _renderTarget = new RenderTarget2D(_graphics.GraphicsDevice,
@@ -60,7 +67,9 @@ namespace GameEngine
 
             // TODO: use this.Content to load your game content here
         }
+        #endregion
 
+        #region Update
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
@@ -71,11 +80,49 @@ namespace GameEngine
             base.Update(gameTime);
         }
 
+        private void SwitchGameState(BaseGameState gameState)
+        {
+            _currentGameState?.UnloadContent(Content);
+
+            _currentGameState = gameState;
+            _currentGameState.LoadContent(Content);
+            _currentGameState.OnStateSwitched += CurrentGameState_OnStateSwitched;
+            _currentGameState.OnEventNotification += _currentGameState_OnEventNotification;
+        }
+
+        private void CurrentGameState_OnStateSwitched(object sender, BaseGameState e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void _currentGameState_OnEventNotification(object sender, Events gameEvent)
+        {
+            switch (gameEvent)
+            {
+                case Events.GAME_QUIT:
+                    Exit();
+                    break;
+            }
+        }
+        #endregion
+
         protected override void Draw(GameTime gameTime)
         {
+            // render to the render target
+            GraphicsDevice.SetRenderTarget(_renderTarget);
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // TODO: Add your drawing code here
+            _spriteBatch.Begin();
+            _currentGameState.Render(_spriteBatch);
+            _spriteBatch.End();
+
+            // now render the scaled content
+            _graphics.GraphicsDevice.SetRenderTarget(null);
+            _graphics.GraphicsDevice.Clear(ClearOptions.Target, Color.Black, 1.0f, 0);
+
+            _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Opaque);
+            _spriteBatch.Draw(_renderTarget, _renderScaleRectangle, Color.White);
+            _spriteBatch.End();
 
             base.Draw(gameTime);
         }

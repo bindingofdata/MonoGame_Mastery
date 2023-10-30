@@ -21,11 +21,22 @@ namespace GameEngine.State
 
         public abstract void HandleInput();
 
+        // event handlers
         public event EventHandler<BaseGameState> OnStateSwitched;
-
         protected void SwitchState(BaseGameState gameState)
         {
             OnStateSwitched?.Invoke(this, gameState);
+        }
+
+        public event EventHandler<Events> OnEventNotification;
+        protected void NotifyEvent(Events eventType, object argument = null)
+        {
+            OnEventNotification?.Invoke(this, eventType);
+
+            foreach (BaseGameObject gameObject in _gameObjects)
+            {
+                gameObject.OnNotify(eventType);
+            }
         }
 
         protected void AddGameObject(BaseGameObject gameObject)

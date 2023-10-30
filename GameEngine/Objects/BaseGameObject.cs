@@ -8,8 +8,10 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace GameEngine.Objects
 {
-    internal class BaseGameObject
+    internal abstract class BaseGameObject
     {
+        public virtual void OnNotify(Events eventType) { }
+
         public int zIndex;
 
         public void Render(SpriteBatch spriteBatch)
