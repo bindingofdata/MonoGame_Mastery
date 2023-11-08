@@ -1,4 +1,7 @@
-﻿using Microsoft.Xna.Framework.Content;
+﻿using GameEngine.Objects;
+
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Input;
 
 using System;
 using System.Collections.Generic;
@@ -12,17 +15,15 @@ namespace GameEngine.State
     {
         public override void HandleInput()
         {
-            throw new NotImplementedException();
+            if (Keyboard.GetState().IsKeyDown(Keys.Enter))
+            {
+                SwitchState(new GameplayState());
+            }
         }
 
-        public override void LoadContent(ContentManager contentManager)
+        public override void LoadContent()
         {
-            throw new NotImplementedException();
-        }
-
-        public override void UnloadContent(ContentManager contentManager)
-        {
-            throw new NotImplementedException();
+            AddGameObject(new SplashImage(LoadTexture("splash")));
         }
     }
 }

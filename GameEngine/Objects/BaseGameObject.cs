@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace GameEngine.Objects
@@ -16,7 +17,9 @@ namespace GameEngine.Objects
 
         public void Render(SpriteBatch spriteBatch)
         {
-
+            spriteBatch.Draw(_texture, Vector2.One, Color.White);
         }
+
+        protected Texture2D _texture;
     }
 }

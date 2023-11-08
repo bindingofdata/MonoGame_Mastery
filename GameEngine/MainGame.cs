@@ -19,16 +19,19 @@ namespace GameEngine
         public MainGame()
         {
             _graphics = new GraphicsDeviceManager(this);
-            _graphics.PreferredBackBufferWidth = 1024;
-            _graphics.PreferredBackBufferHeight = 768;
-            _graphics.IsFullScreen = true;
             Content.RootDirectory = "Content";
-            IsMouseVisible = true;
         }
 
         #region Initialization/Loading
         protected override void Initialize()
         {
+            _graphics.PreferredBackBufferWidth = BASE_WIDTH;
+            _graphics.PreferredBackBufferHeight = BASE_HEIGHT;
+            _graphics.IsFullScreen = false;
+            _graphics.ApplyChanges();
+
+            _spriteBatch = new SpriteBatch(GraphicsDevice);
+
             _renderTarget = new RenderTarget2D(_graphics.GraphicsDevice,
                 BASE_WIDTH, BASE_HEIGHT,false, SurfaceFormat.Color,
                 DepthFormat.None, 0, RenderTargetUsage.DiscardContents);
@@ -63,7 +66,7 @@ namespace GameEngine
 
         protected override void LoadContent()
         {
-            _spriteBatch = new SpriteBatch(GraphicsDevice);
+            SwitchGameState(new SplashState());
 
             // TODO: use this.Content to load your game content here
         }
@@ -75,6 +78,7 @@ namespace GameEngine
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+            _currentGameState.HandleInput();
             // TODO: Add your update logic here
 
             base.Update(gameTime);
@@ -82,17 +86,23 @@ namespace GameEngine
 
         private void SwitchGameState(BaseGameState gameState)
         {
-            _currentGameState?.UnloadContent(Content);
+            if (_currentGameState != null)
+            {
+                _currentGameState.OnStateSwitched -= CurrentGameState_OnStateSwitched;
+                _currentGameState.OnEventNotification -= _currentGameState_OnEventNotification;
+                _currentGameState.UnloadContent();
+            }
 
             _currentGameState = gameState;
-            _currentGameState.LoadContent(Content);
+            _currentGameState.Initialize(Content);
+            _currentGameState.LoadContent();
             _currentGameState.OnStateSwitched += CurrentGameState_OnStateSwitched;
             _currentGameState.OnEventNotification += _currentGameState_OnEventNotification;
         }
 
         private void CurrentGameState_OnStateSwitched(object sender, BaseGameState e)
         {
-            throw new NotImplementedException();
+            SwitchGameState(e);
         }
 
         private void _currentGameState_OnEventNotification(object sender, Events gameEvent)
@@ -127,8 +137,8 @@ namespace GameEngine
             base.Draw(gameTime);
         }
 
-        private const int BASE_WIDTH = 640;
-        private const int BASE_HEIGHT = 480;
+        private const int BASE_WIDTH = 1280;
+        private const int BASE_HEIGHT = 720;
         private const float BASE_ASPECT_RATIO = (float)BASE_WIDTH / (float)BASE_HEIGHT;
     }
 }

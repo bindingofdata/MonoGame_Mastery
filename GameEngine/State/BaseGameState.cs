@@ -14,10 +14,26 @@ namespace GameEngine.State
     internal abstract class BaseGameState
     {
         private readonly List<BaseGameObject> _gameObjects = new List<BaseGameObject>();
+        private ContentManager _contentManager;
 
-        public abstract void LoadContent(ContentManager contentManager);
+        public void Initialize(ContentManager contentManager)
+        {
+            _contentManager = contentManager;
+        }
 
-        public abstract void UnloadContent(ContentManager contentManager);
+        public abstract void LoadContent();
+
+        protected Texture2D LoadTexture(string textureName)
+        {
+            Texture2D texture = _contentManager.Load<Texture2D>($@"Graphics\{textureName}");
+
+            return texture ?? _contentManager.Load<Texture2D>(FallbackTexture);
+        }
+
+        public void UnloadContent()
+        {
+            _contentManager.Unload();
+        }
 
         public abstract void HandleInput();
 
@@ -52,5 +68,7 @@ namespace GameEngine.State
                 gameObject.Render(spriteBatch);
             }
         }
+
+        private const string FallbackTexture = @"Graphics\Empty";
     }
 }

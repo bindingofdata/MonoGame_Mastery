@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using GameEngine.Objects;
+
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
 
@@ -15,20 +17,19 @@ namespace GameEngine.State
         public override void HandleInput()
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
-                Keyboard.GetState().IsKeyDown(Keys.Enter))
+                Keyboard.GetState().IsKeyDown(Keys.Escape))
             {
                 NotifyEvent(Events.GAME_QUIT);
             }
         }
 
-        public override void LoadContent(ContentManager contentManager)
+        public override void LoadContent()
         {
-            throw new NotImplementedException();
+            AddGameObject(new SplashImage(LoadTexture(BackgroundTexture)));
+            AddGameObject(new PlayerSprite(LoadTexture(PlayerFighter)));
         }
 
-        public override void UnloadContent(ContentManager contentManager)
-        {
-            throw new NotImplementedException();
-        }
+        private const string PlayerFighter = "Fighter";
+        private const string BackgroundTexture = "Barren";
     }
 }
