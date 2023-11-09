@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace GameEngine.Objects
 {
-    internal class TerrainBackground : BaseGameObject
+    internal sealed class TerrainBackground : BaseGameObject
     {
         public TerrainBackground(Texture2D texture)
         {

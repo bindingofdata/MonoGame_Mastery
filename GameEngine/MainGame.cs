@@ -8,7 +8,7 @@ using System;
 
 namespace GameEngine
 {
-    public class MainGame : Game
+    public sealed class MainGame : Game
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;

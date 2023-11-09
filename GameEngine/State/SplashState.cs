@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace GameEngine.State
 {
-    internal class SplashState : BaseGameState
+    internal sealed class SplashState : BaseGameState
     {
         public override void HandleInput()
         {
@@ -24,6 +24,11 @@ namespace GameEngine.State
         public override void LoadContent()
         {
             AddGameObject(new SplashImage(LoadTexture("splash")));
+        }
+
+        protected override void SetInputManager()
+        {
+            
         }
     }
 }

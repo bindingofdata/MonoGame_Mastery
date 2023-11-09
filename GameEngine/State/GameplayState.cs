@@ -1,4 +1,5 @@
-﻿using GameEngine.Objects;
+﻿using GameEngine.Input;
+using GameEngine.Objects;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -12,16 +13,30 @@ using System.Threading.Tasks;
 
 namespace GameEngine.State
 {
-    internal class GameplayState : BaseGameState
+    internal sealed class GameplayState : BaseGameState
     {
         private PlayerSprite _playerSprite;
         public override void HandleInput()
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
-                Keyboard.GetState().IsKeyDown(Keys.Escape))
+            InputManager.GetCommands(cmd =>
             {
-                NotifyEvent(Events.GAME_QUIT);
-            }
+                if (cmd is GameplayInputCommand.GameExit)
+                {
+                    NotifyEvent(Events.GAME_QUIT);
+                }
+                if (cmd is GameplayInputCommand.PlayerMoveLeft)
+                {
+                    _playerSprite.MoveLeft();
+                }
+                if (cmd is GameplayInputCommand.PlayerMoveRight)
+                {
+                    _playerSprite.MoveRight();
+                }
+                if (cmd is GameplayInputCommand.PlayerShoots)
+                {
+                    _playerSprite.Shoot();
+                }
+            });
         }
 
         public override void LoadContent()
@@ -36,6 +51,11 @@ namespace GameEngine.State
             _playerSprite.Position = new Vector2(startingX, startingY);
 
             AddGameObject(_playerSprite);
+        }
+
+        protected override void SetInputManager()
+        {
+            InputManager = new InputManager(new GameplayInputMapper());
         }
 
         private const string PlayerFighter = "Fighter";

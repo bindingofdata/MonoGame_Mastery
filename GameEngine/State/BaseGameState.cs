@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using GameEngine.Input;
 using GameEngine.Objects;
 
 using Microsoft.Xna.Framework.Content;
@@ -18,14 +19,20 @@ namespace GameEngine.State
         protected int _viewportHeight;
         protected int _viewportWidth;
 
+        protected InputManager InputManager { get; set; }
+
         public void Initialize(ContentManager contentManager, int viewportHeight, int viewportWidth)
         {
             _contentManager = contentManager;
             _viewportHeight = viewportHeight;
             _viewportWidth = viewportWidth;
+
+            SetInputManager();
         }
 
         public abstract void LoadContent();
+
+        protected abstract void SetInputManager();
 
         protected Texture2D LoadTexture(string textureName)
         {

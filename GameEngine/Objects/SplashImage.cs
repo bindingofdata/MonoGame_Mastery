@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace GameEngine.Objects
 {
-    internal class SplashImage : BaseGameObject
+    internal sealed class SplashImage : BaseGameObject
     {
         public SplashImage(Texture2D image)
         {

@@ -9,11 +9,28 @@ using System.Threading.Tasks;
 
 namespace GameEngine.Objects
 {
-    internal class PlayerSprite : BaseGameObject
+    internal sealed class PlayerSprite : BaseGameObject
     {
         public PlayerSprite(Texture2D sprite)
         {
             _texture = sprite;
         }
+
+        public void MoveLeft()
+        {
+            _position.X -= BASE_SPEED;
+        }
+
+        public void MoveRight()
+        {
+            _position.X += BASE_SPEED;
+        }
+
+        public void Shoot()
+        {
+        
+        }
+
+        private const float BASE_SPEED = 10.0f;
     }
 }
