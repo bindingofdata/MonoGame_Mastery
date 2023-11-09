@@ -11,13 +11,22 @@ namespace GameEngine.Objects
 {
     internal abstract class BaseGameObject
     {
+        protected Vector2 _position;
+        public Vector2 Position
+        {
+            get { return _position; }
+            set { _position = value; }
+        }
+
+        public int ZIndex { get; set; }
+        public int Width => _texture.Width;
+        public int Height => _texture.Height;
+
         public virtual void OnNotify(Events eventType) { }
 
-        public int zIndex;
-
-        public void Render(SpriteBatch spriteBatch)
+        public virtual void Render(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(_texture, Vector2.One, Color.White);
+            spriteBatch.Draw(_texture, Position, Color.White);
         }
 
         protected Texture2D _texture;

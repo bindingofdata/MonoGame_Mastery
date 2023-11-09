@@ -14,6 +14,7 @@ namespace GameEngine.State
 {
     internal class GameplayState : BaseGameState
     {
+        private PlayerSprite _playerSprite;
         public override void HandleInput()
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
@@ -25,8 +26,16 @@ namespace GameEngine.State
 
         public override void LoadContent()
         {
-            AddGameObject(new SplashImage(LoadTexture(BackgroundTexture)));
-            AddGameObject(new PlayerSprite(LoadTexture(PlayerFighter)));
+            // scrolling background
+            AddGameObject(new TerrainBackground(LoadTexture(BackgroundTexture)));
+
+            // player sprite
+            _playerSprite = new PlayerSprite(LoadTexture(PlayerFighter));
+            int startingX = (_viewportWidth / 2) - (_playerSprite.Width / 2);
+            int startingY = _viewportHeight - _playerSprite.Height - 30;
+            _playerSprite.Position = new Vector2(startingX, startingY);
+
+            AddGameObject(_playerSprite);
         }
 
         private const string PlayerFighter = "Fighter";

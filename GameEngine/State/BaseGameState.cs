@@ -15,10 +15,14 @@ namespace GameEngine.State
     {
         private readonly List<BaseGameObject> _gameObjects = new List<BaseGameObject>();
         private ContentManager _contentManager;
+        protected int _viewportHeight;
+        protected int _viewportWidth;
 
-        public void Initialize(ContentManager contentManager)
+        public void Initialize(ContentManager contentManager, int viewportHeight, int viewportWidth)
         {
             _contentManager = contentManager;
+            _viewportHeight = viewportHeight;
+            _viewportWidth = viewportWidth;
         }
 
         public abstract void LoadContent();
@@ -63,7 +67,7 @@ namespace GameEngine.State
         public void Render(SpriteBatch spriteBatch)
         {
             foreach (var gameObject in _gameObjects
-                .OrderBy(gameObject => gameObject.zIndex))
+                .OrderBy(gameObject => gameObject.ZIndex))
             {
                 gameObject.Render(spriteBatch);
             }
