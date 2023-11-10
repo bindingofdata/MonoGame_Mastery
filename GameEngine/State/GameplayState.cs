@@ -86,6 +86,21 @@ namespace GameEngine.State
             {
                 _isShooting = false;
             }
+
+            List<BulletSprite> activeBullets = new List<BulletSprite>();
+            foreach (BulletSprite bullet in _bulletList)
+            {
+                if (bullet.Position.Y > -30)
+                {
+                    activeBullets.Add(bullet);
+                }
+                else
+                {
+                    RemoveGameObject(bullet);
+                }
+            }
+
+            _bulletList = activeBullets;
         }
 
         private void Shoot(GameTime gameTime)
