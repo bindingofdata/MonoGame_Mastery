@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using GameEngine.Input;
 using GameEngine.Objects;
 
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -46,7 +47,9 @@ namespace GameEngine.State
             _contentManager.Unload();
         }
 
-        public abstract void HandleInput();
+        public abstract void HandleInput(GameTime gameTime);
+
+        public virtual void Update(GameTime gameTime) { }
 
         // event handlers
         public event EventHandler<BaseGameState> OnStateSwitched;

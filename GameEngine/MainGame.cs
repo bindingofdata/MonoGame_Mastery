@@ -67,8 +67,6 @@ namespace GameEngine
         protected override void LoadContent()
         {
             SwitchGameState(new SplashState());
-
-            // TODO: use this.Content to load your game content here
         }
         #endregion
 
@@ -78,8 +76,8 @@ namespace GameEngine
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            _currentGameState.HandleInput();
-            // TODO: Add your update logic here
+            _currentGameState.HandleInput(gameTime);
+            _currentGameState.Update(gameTime);
 
             base.Update(gameTime);
         }

@@ -26,11 +26,6 @@ namespace GameEngine.Objects
             _position.X += BASE_SPEED;
         }
 
-        public void Shoot()
-        {
-        
-        }
-
         private const float BASE_SPEED = 10.0f;
     }
 }

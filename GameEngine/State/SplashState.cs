@@ -1,5 +1,6 @@
 ﻿using GameEngine.Objects;
 
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
 
@@ -13,7 +14,7 @@ namespace GameEngine.State
 {
     internal sealed class SplashState : BaseGameState
     {
-        public override void HandleInput()
+        public override void HandleInput(GameTime gameTime)
         {
             if (Keyboard.GetState().IsKeyDown(Keys.Enter))
             {
