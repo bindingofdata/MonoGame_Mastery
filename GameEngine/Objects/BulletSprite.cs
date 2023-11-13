@@ -6,8 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
+using Engine.Objects;
 
-namespace GameEngine.Objects
+namespace FlyingShooter.Objects
 {
     internal sealed class BulletSprite : BaseGameObject
     {
