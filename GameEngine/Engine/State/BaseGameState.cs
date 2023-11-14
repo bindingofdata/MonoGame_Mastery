@@ -4,8 +4,10 @@ using System.Linq;
 
 using Engine.Input;
 using Engine.Objects;
+using Engine.Sound;
 
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -15,6 +17,7 @@ namespace Engine.State
     {
         private readonly List<BaseGameObject> _gameObjects = new List<BaseGameObject>();
         private ContentManager _contentManager;
+        protected SoundManager _soundManager = new SoundManager();
         protected int _viewportHeight;
         protected int _viewportWidth;
 
@@ -40,6 +43,11 @@ namespace Engine.State
             return texture ?? _contentManager.Load<Texture2D>(FallbackTexture);
         }
 
+        protected SoundEffect LoadMusic(string soundName)
+        {
+            return _contentManager.Load<SoundEffect>($@"Music\{soundName}");
+        }
+
         public void UnloadContent()
         {
             _contentManager.Unload();
@@ -47,7 +55,13 @@ namespace Engine.State
 
         public abstract void HandleInput(GameTime gameTime);
 
-        public virtual void Update(GameTime gameTime) { }
+        public abstract void UpdateGameState(GameTime gameTime);
+
+        public void Update(GameTime gameTime)
+        {
+            UpdateGameState(gameTime);
+            _soundManager.PlaySoundtrack();
+        }
 
         // event handlers
         public event EventHandler<BaseGameState> OnStateSwitched;

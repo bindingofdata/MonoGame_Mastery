@@ -1,13 +1,8 @@
-﻿using Engine.Input.Commands;
-using Microsoft.Xna.Framework.Input;
+﻿using Microsoft.Xna.Framework.Input;
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Engine.Input.Mappers
+namespace Engine.Input
 {
     public abstract class BaseInputMapper
     {

@@ -1,17 +1,10 @@
-﻿using Engine.Input.Commands;
-using Engine.Input.Mappers;
-using Microsoft.VisualBasic;
-using Microsoft.Xna.Framework.Input;
+﻿using Microsoft.Xna.Framework.Input;
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Engine.Input
 {
-    public class InputManager
+    public sealed class InputManager
     {
         private BaseInputMapper _commandMap;
         public InputManager(BaseInputMapper commandMap)

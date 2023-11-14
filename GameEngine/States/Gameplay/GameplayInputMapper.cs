@@ -1,5 +1,4 @@
-﻿using Engine.Input.Commands;
-using Engine.Input.Mappers;
+﻿using Engine.Input;
 
 using Microsoft.Xna.Framework.Input;
 

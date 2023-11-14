@@ -11,6 +11,7 @@ using Engine.Objects;
 using Engine;
 using Engine.State;
 using FlyingShooter.Objects;
+using Microsoft.Xna.Framework.Audio;
 
 namespace FlyingShooter.States
 {
@@ -48,6 +49,13 @@ namespace FlyingShooter.States
             _bulletTexture = LoadTexture(BulletTexture);
             _bulletList = new List<BulletSprite>();
             _weaponCooldown = _baseWeaponCooldown;
+
+            // audio
+            _soundManager.SetSoundtrack(new List<SoundEffectInstance>()
+            {
+                LoadMusic("FutureAmbient_1").CreateInstance(),
+                LoadMusic("FutureAmbient_2").CreateInstance(),
+            });
         }
 
         public override void HandleInput(GameTime gameTime)
@@ -75,7 +83,7 @@ namespace FlyingShooter.States
             });
         }
 
-        public override void Update(GameTime gameTime)
+        public override void UpdateGameState(GameTime gameTime)
         {
             foreach (BulletSprite bullet in _bulletList)
             {

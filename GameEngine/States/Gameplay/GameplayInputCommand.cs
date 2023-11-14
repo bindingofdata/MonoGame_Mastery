@@ -1,4 +1,4 @@
-﻿using Engine.Input.Commands;
+﻿using Engine.Input;
 
 using System;
 using System.Collections.Generic;

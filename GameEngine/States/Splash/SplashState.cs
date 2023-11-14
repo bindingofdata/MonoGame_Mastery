@@ -28,6 +28,11 @@ namespace FlyingShooter.States
             AddGameObject(new SplashImage(LoadTexture("splash")));
         }
 
+        public override void UpdateGameState(GameTime gameTime)
+        {
+            
+        }
+
         protected override void SetInputManager()
         {
 
