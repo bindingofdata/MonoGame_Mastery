@@ -112,11 +112,11 @@ namespace Engine
             SwitchGameState(e);
         }
 
-        private void _currentGameState_OnEventNotification(object sender, Events gameEvent)
+        private void _currentGameState_OnEventNotification(object sender, BaseGameStateEvent gameEvent)
         {
             switch (gameEvent)
             {
-                case Events.GAME_QUIT:
+                case BaseGameStateEvent.GameQuit:
                     Exit();
                     break;
             }

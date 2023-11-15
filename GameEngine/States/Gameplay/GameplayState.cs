@@ -49,8 +49,9 @@ namespace FlyingShooter.States
             _bulletTexture = LoadTexture(BulletTexture);
             _bulletList = new List<BulletSprite>();
             _weaponCooldown = _baseWeaponCooldown;
+            _soundManager.RegisterSound(new GameplayEvents.PlayerShoots(), LoadSound("bullet"));
 
-            // audio
+            // bgm
             _soundManager.SetSoundtrack(new List<SoundEffectInstance>()
             {
                 LoadMusic("FutureAmbient_1").CreateInstance(),
@@ -64,7 +65,7 @@ namespace FlyingShooter.States
             {
                 if (cmd is GameplayInputCommand.GameExit)
                 {
-                    NotifyEvent(Events.GAME_QUIT);
+                    NotifyEvent(new BaseGameStateEvent.GameQuit());
                 }
                 if (cmd is GameplayInputCommand.PlayerMoveLeft)
                 {
@@ -118,6 +119,8 @@ namespace FlyingShooter.States
                 CreateBullets();
                 _isShooting = true;
                 _lastShotTime = gameTime.TotalGameTime;
+
+                NotifyEvent(new GameplayEvents.PlayerShoots());
             }
         }
 

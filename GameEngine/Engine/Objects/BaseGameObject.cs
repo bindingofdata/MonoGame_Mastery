@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Engine.State;
+
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Engine.Objects
@@ -16,7 +18,7 @@ namespace Engine.Objects
         public int Width => _texture.Width;
         public int Height => _texture.Height;
 
-        public virtual void OnNotify(Events eventType) { }
+        public virtual void OnNotify(BaseGameStateEvent eventType) { }
 
         public virtual void Render(SpriteBatch spriteBatch)
         {

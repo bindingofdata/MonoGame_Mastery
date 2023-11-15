@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework.Audio;
+﻿using Engine.State;
+
+using Microsoft.Xna.Framework.Audio;
 
 using System;
 using System.Collections.Generic;
@@ -10,6 +12,24 @@ namespace Engine.Sound
 {
     public sealed class SoundManager
     {
+        #region SFX
+        private Dictionary<Type, SoundEffect> _soundBank = new Dictionary<Type, SoundEffect>();
+
+        public void RegisterSound(BaseGameStateEvent gameEvent, SoundEffect sound)
+        {
+            _soundBank.Add(gameEvent.GetType(), sound);
+        }
+
+        public void OnNotify(BaseGameStateEvent gameEvent)
+        {
+            if (_soundBank.TryGetValue(gameEvent.GetType(), out SoundEffect sound))
+            {
+                sound.Play();
+            }
+        }
+        #endregion
+
+        #region BGM
         private int _soundtrackIndex;
         private List<SoundEffectInstance> _musicTracks = new List<SoundEffectInstance>();
 
@@ -42,5 +62,6 @@ namespace Engine.Sound
                 _soundtrackIndex = nextTrackIndex;
             }
         }
+        #endregion
     }
 }

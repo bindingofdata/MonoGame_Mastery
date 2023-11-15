@@ -48,6 +48,11 @@ namespace Engine.State
             return _contentManager.Load<SoundEffect>($@"Music\{soundName}");
         }
 
+        protected SoundEffect LoadSound(string soundName)
+        {
+            return _contentManager.Load<SoundEffect>($@"Sounds\{soundName}");
+        }
+
         public void UnloadContent()
         {
             _contentManager.Unload();
@@ -70,8 +75,8 @@ namespace Engine.State
             OnStateSwitched?.Invoke(this, gameState);
         }
 
-        public event EventHandler<Events> OnEventNotification;
-        protected void NotifyEvent(Events eventType, object argument = null)
+        public event EventHandler<BaseGameStateEvent> OnEventNotification;
+        protected void NotifyEvent(BaseGameStateEvent eventType, object argument = null)
         {
             OnEventNotification?.Invoke(this, eventType);
 
@@ -79,6 +84,8 @@ namespace Engine.State
             {
                 gameObject.OnNotify(eventType);
             }
+
+            _soundManager.OnNotify(eventType);
         }
 
         protected void AddGameObject(BaseGameObject gameObject)
