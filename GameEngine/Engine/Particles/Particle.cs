@@ -34,7 +34,7 @@ namespace Engine.Particles
             _velocity = particleOptions.Velocity;
             _acceleration = particleOptions.Acceleration;
             _rotation = particleOptions.Rotation;
-            _opacityFadeRate = particleOptions.opacityFadeRate;
+            _opacityFadeRate = particleOptions.OpacityFadeRate;
             _age = 0;
 
             Position = particleOptions.Position;
@@ -73,6 +73,6 @@ namespace Engine.Particles
         public float Scale { get; set; }
         public float Rotation { get; set; }
         public float Opacity { get; set; }
-        public float opacityFadeRate { get; set; }
+        public float OpacityFadeRate { get; set; }
     }
 }
