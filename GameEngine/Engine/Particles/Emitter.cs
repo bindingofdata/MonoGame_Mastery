@@ -11,16 +11,16 @@ using System.Threading.Tasks;
 
 namespace Engine.Particles
 {
-    public sealed class Emitter : BaseGameObject
+    public abstract class Emitter : BaseGameObject
     {
         private LinkedList<Particle> _activeParticles = new LinkedList<Particle>();
         private LinkedList<Particle> _inactiveParticles = new LinkedList<Particle>();
         private EmitterParticleState _emitterParticleState;
         private IEmitterType _emitterType;
-        private int _particlesEmittedPerUpdate = 0;
-        private int _maxParticleCount = 0;
+        private int _particlesEmittedPerUpdate;
+        private int _maxParticleCount;
 
-        public Emitter(EmitterOptions emitterOptions)
+        protected Emitter(EmitterOptions emitterOptions)
         {
             _emitterParticleState = emitterOptions.ParticleState;
             _emitterType = emitterOptions.EmitterType;
