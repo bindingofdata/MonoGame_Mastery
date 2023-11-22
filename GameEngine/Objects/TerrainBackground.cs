@@ -12,11 +12,7 @@ namespace FlyingShooter.Objects
 {
     internal sealed class TerrainBackground : BaseGameObject
     {
-        public TerrainBackground(Texture2D texture)
-        {
-            _texture = texture;
-            _position = Vector2.Zero;
-        }
+        public TerrainBackground(Texture2D texture, Vector2 position) : base(texture, position) { }
 
         public override void Render(SpriteBatch spriteBatch)
         {

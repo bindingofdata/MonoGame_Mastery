@@ -6,12 +6,14 @@ using Microsoft.Xna.Framework;
 using Engine.Particles;
 using Engine.Input;
 using Engine.State;
+using Engine.Objects;
+using FlyingShooter.Objects;
 
 namespace FlyingShooter.States
 {
     public sealed class DevState : BaseGameState
     {
-        private ExhaustEmitter _exhaustEmitter;
+        private BaseGameObject _testObject;
 
         public override void HandleInput(GameTime gameTime)
         {
@@ -26,23 +28,23 @@ namespace FlyingShooter.States
 
         public override void LoadContent()
         {
-            Vector2 exhaustPosition = new Vector2(_viewportWidth / 2, _viewportHeight / 2);
-            _exhaustEmitter = new ExhaustEmitter(
-                LoadTexture(ExhaustTexture),
-                exhaustPosition);
+            Vector2 objectPosition = new Vector2(_viewportWidth / 2, _viewportHeight / 2);
+            _testObject = new Missile(
+                LoadTexture(MissileTexture),
+                objectPosition);
 
-            AddGameObject(_exhaustEmitter);
+            AddGameObject(_testObject);
         }
 
         public override void UpdateGameState(GameTime gameTime)
         {
-            _exhaustEmitter.Position = new Vector2(_exhaustEmitter.Position.X, _exhaustEmitter.Position.Y - 3f);
-            _exhaustEmitter.Update(gameTime);
+            _testObject.Position = new Vector2(_testObject.Position.X, _testObject.Position.Y - 3f);
+            _testObject.Update(gameTime);
 
-            if (_exhaustEmitter.Position.Y < -200)
+            if (_testObject.Position.Y < -200)
             {
                 //RemoveGameObject(_exhaustEmitter);
-                _exhaustEmitter.Position = new Vector2(_exhaustEmitter.Position.X, _viewportHeight / 2);
+                _testObject.Position = new Vector2(_testObject.Position.X, _viewportHeight / 2);
             }
         }
 
@@ -52,5 +54,9 @@ namespace FlyingShooter.States
         }
 
         private const string ExhaustTexture = "Cloud001";
+        private const string PlayerFighter = "Fighter";
+        private const string BackgroundTexture = "Barren";
+        private const string BulletTexture = "bullet";
+        private const string MissileTexture = "Missile05";
     }
 }

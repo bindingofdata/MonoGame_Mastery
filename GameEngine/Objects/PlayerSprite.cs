@@ -12,10 +12,7 @@ namespace FlyingShooter.Objects
 {
     internal sealed class PlayerSprite : BaseGameObject
     {
-        public PlayerSprite(Texture2D sprite)
-        {
-            _texture = sprite;
-        }
+        public PlayerSprite(Texture2D sprite) : base(sprite) { }
 
         public void MoveLeft()
         {

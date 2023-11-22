@@ -12,9 +12,9 @@ namespace FlyingShooter.Particles
 {
     public sealed class ExhaustParticleState : EmitterParticleState
     {
-        public override int MinLifespan => 1; // in seconds
+        public override int MinLifespan => 60; // in seconds
 
-        public override int MaxLifespan => 3;
+        public override int MaxLifespan => 90;
 
         public override float Velocity => 4.0f;
 

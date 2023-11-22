@@ -12,10 +12,9 @@ namespace FlyingShooter.Objects
 {
     internal sealed class BulletSprite : BaseGameObject
     {
-        public BulletSprite(Texture2D texture)
-        {
-            _texture = texture;
-        }
+        public BulletSprite(Texture2D sprite, Vector2 position) : base(sprite, position) { }
+
+        public BulletSprite(Texture2D sprite) : base(sprite) { }
 
         public void MoveUp()
         {

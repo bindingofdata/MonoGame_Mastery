@@ -11,9 +11,6 @@ namespace FlyingShooter.Objects
 {
     internal sealed class SplashImage : BaseGameObject
     {
-        public SplashImage(Texture2D image)
-        {
-            _texture = image;
-        }
+        public SplashImage(Texture2D image) : base(image) { }
     }
 }

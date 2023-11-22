@@ -34,7 +34,7 @@ namespace FlyingShooter.States
         public override void LoadContent()
         {
             // scrolling background
-            AddGameObject(new TerrainBackground(LoadTexture(BackgroundTexture)));
+            AddGameObject(new TerrainBackground(LoadTexture(BackgroundTexture), Vector2.Zero));
 
             // player sprite
             _playerSprite = new PlayerSprite(LoadTexture(PlayerFighter));
@@ -167,5 +167,6 @@ namespace FlyingShooter.States
         private const string PlayerFighter = "Fighter";
         private const string BackgroundTexture = "Barren";
         private const string BulletTexture = "bullet";
+        private const string MissileTexture = "Missile05";
     }
 }

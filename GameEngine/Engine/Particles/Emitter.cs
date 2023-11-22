@@ -20,14 +20,12 @@ namespace Engine.Particles
         private int _particlesEmittedPerUpdate;
         private int _maxParticleCount;
 
-        protected Emitter(EmitterOptions emitterOptions)
+        protected Emitter(EmitterOptions emitterOptions) : base(emitterOptions.Texture, emitterOptions.Position)
         {
             _emitterParticleState = emitterOptions.ParticleState;
             _emitterType = emitterOptions.EmitterType;
-            _texture = emitterOptions.Texture;
             _particlesEmittedPerUpdate = emitterOptions.ParticlesPerUpdate;
             _maxParticleCount = emitterOptions.MaxParticleCount;
-            Position = emitterOptions.Position;
         }
 
         public void Update(GameTime gameTime)
