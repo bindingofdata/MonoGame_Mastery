@@ -10,7 +10,7 @@ namespace FlyingShooter
 
         static void Main()
         {
-            using var game = new MainGame(BASE_WIDTH, BASE_HEIGHT, new DevState());
+            using var game = new MainGame(BASE_WIDTH, BASE_HEIGHT, new SplashState());
             game.Run();
         }
     }

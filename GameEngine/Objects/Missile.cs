@@ -25,7 +25,7 @@ namespace FlyingShooter.Objects
 
         private ExhaustEmitter _exhaustEmitter = new ExhaustEmitter(null, Vector2.Zero);
 
-        public Missile(Texture2D missileSprite, Vector2 position, Texture2D emitterTexture) : base(missileSprite, position)
+        public Missile(Texture2D missileSprite, Texture2D emitterTexture, Vector2 position) : base(missileSprite, position)
         {
             float ratio = (float)_texture.Height / _texture.Width;
             _missileWidth = 50;

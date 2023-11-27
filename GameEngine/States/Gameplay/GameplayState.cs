@@ -34,10 +34,10 @@ namespace FlyingShooter.States
         public override void LoadContent()
         {
             // scrolling background
-            AddGameObject(new TerrainBackground(LoadTexture(BackgroundTexture), Vector2.Zero));
+            AddGameObject(new TerrainBackground(LoadTexture(TextureMap.GamePlayBG), Vector2.Zero));
 
             // player sprite
-            _playerSprite = new PlayerSprite(LoadTexture(PlayerFighter));
+            _playerSprite = new PlayerSprite(LoadTexture(TextureMap.PlayerFighterTexture));
             _playerSpriteOffset = _playerSprite.Width / 2f;
             int startingX = _viewportWidth / 2 - (int)_playerSpriteOffset;
             int startingY = _viewportHeight - _playerSprite.Height - 30;
@@ -46,16 +46,16 @@ namespace FlyingShooter.States
             AddGameObject(_playerSprite);
 
             // player bullets
-            _bulletTexture = LoadTexture(BulletTexture);
+            _bulletTexture = LoadTexture(TextureMap.BulletTexture);
             _bulletList = new List<BulletSprite>();
             _weaponCooldown = _baseWeaponCooldown;
-            _soundManager.RegisterSound(new GameplayEvents.PlayerShoots(), LoadSound("bullet"));
+            _soundManager.RegisterSound(new GameplayEvents.PlayerShoots(), LoadSound(AudioMap.BulletSFX));
 
             // bgm
             _soundManager.SetSoundtrack(new List<SoundEffectInstance>()
             {
-                LoadMusic("FutureAmbient_1").CreateInstance(),
-                LoadMusic("FutureAmbient_2").CreateInstance(),
+                LoadMusic(AudioMap.GamePlayBGM_01).CreateInstance(),
+                LoadMusic(AudioMap.GamePlayBGM_02).CreateInstance(),
             });
         }
 
@@ -162,11 +162,5 @@ namespace FlyingShooter.States
                 gameObject.Position = new Vector2(_playerSprite.Position.X, _viewportHeight - gameObject.Height);
             }
         }
-
-
-        private const string PlayerFighter = "Fighter";
-        private const string BackgroundTexture = "Barren";
-        private const string BulletTexture = "bullet";
-        private const string MissileTexture = "Missile05";
     }
 }
