@@ -3,7 +3,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-using FlyingShooter.States.Gameplay;
+using FlyingShooter.States.GamePlay;
 
 using System;
 using System.Collections.Generic;
@@ -17,14 +17,26 @@ namespace FlyingShooter.States
 {
     internal sealed class GameplayState : BaseGameState
     {
+        // player
         private PlayerSprite _playerSprite;
         private float _playerSpriteOffset;
+
+        // bullets
         private Texture2D _bulletTexture;
         private List<BulletSprite> _bulletList;
-        private bool _isShooting;
-        private TimeSpan _lastShotTime = TimeSpan.Zero;
-        private readonly TimeSpan _baseWeaponCooldown = TimeSpan.FromSeconds(0.2);
-        private TimeSpan _weaponCooldown;
+        private bool _isShootingBullet;
+        private TimeSpan _lastBulletShotAt = TimeSpan.Zero;
+        private readonly TimeSpan _baseBulletCooldown = TimeSpan.FromSeconds(0.2);
+        private TimeSpan _bulletCooldown;
+
+        // missiles
+        private Texture2D _missileTexture;
+        private Texture2D _exhaustTexture;
+        private List<Missile> _missileList;
+        private bool _isShootingMissile;
+        private TimeSpan _lastMissleShotAt = TimeSpan.Zero;
+        private readonly TimeSpan _baseMissileCooldown = TimeSpan.FromSeconds(1);
+        private TimeSpan _missileCooldown;
 
         protected override void SetInputManager()
         {
@@ -48,8 +60,15 @@ namespace FlyingShooter.States
             // player bullets
             _bulletTexture = LoadTexture(TextureMap.BulletTexture);
             _bulletList = new List<BulletSprite>();
-            _weaponCooldown = _baseWeaponCooldown;
-            _soundManager.RegisterSound(new GameplayEvents.PlayerShoots(), LoadSound(AudioMap.BulletSFX));
+            _bulletCooldown = _baseBulletCooldown;
+            _soundManager.RegisterSound(new GamePlayEvents.PlayerShootsBullets(), LoadSound(AudioMap.BulletSFX));
+
+            // player missiles
+            _missileTexture = LoadTexture(TextureMap.MissileTexture);
+            _exhaustTexture = LoadTexture(TextureMap.ExhaustTexture);
+            _missileList = new List<Missile>();
+            _missileCooldown = _baseMissileCooldown;
+            _soundManager.RegisterSound(new GamePlayEvents.PlayerShootsMissile(), LoadSound(AudioMap.MissileSFX), 0.4f, -0.2f, 0.0f);
 
             // bgm
             _soundManager.SetSoundtrack(new List<SoundEffectInstance>()
@@ -86,41 +105,49 @@ namespace FlyingShooter.States
 
         public override void UpdateGameState(GameTime gameTime)
         {
+            // bullets
             foreach (BulletSprite bullet in _bulletList)
             {
                 bullet.MoveUp();
             }
+            _bulletList = CleanUpProjectiles(_bulletList);
 
-            if (gameTime.TotalGameTime - _lastShotTime > _weaponCooldown)
+            if (gameTime.TotalGameTime - _lastBulletShotAt > _bulletCooldown)
             {
-                _isShooting = false;
+                _isShootingBullet = false;
             }
 
-            List<BulletSprite> activeBullets = new List<BulletSprite>();
-            foreach (BulletSprite bullet in _bulletList)
+            // missiles
+            foreach (Missile missile in _missileList)
             {
-                if (bullet.Position.Y > -30)
-                {
-                    activeBullets.Add(bullet);
-                }
-                else
-                {
-                    RemoveGameObject(bullet);
-                }
+                missile.Update(gameTime);
             }
+            _missileList = CleanUpProjectiles(_missileList);
 
-            _bulletList = activeBullets;
+            if (gameTime.TotalGameTime - _lastMissleShotAt > _missileCooldown)
+            {
+                _isShootingMissile = false;
+            }
         }
 
         private void Shoot(GameTime gameTime)
         {
-            if (!_isShooting)
+            if (!_isShootingBullet)
             {
                 CreateBullets();
-                _isShooting = true;
-                _lastShotTime = gameTime.TotalGameTime;
+                _isShootingBullet = true;
+                _lastBulletShotAt = gameTime.TotalGameTime;
 
-                NotifyEvent(new GameplayEvents.PlayerShoots());
+                NotifyEvent(new GamePlayEvents.PlayerShootsBullets());
+            }
+
+            if (!_isShootingMissile)
+            {
+                CreateMissiles();
+                _isShootingMissile = true;
+                _lastMissleShotAt = gameTime.TotalGameTime;
+
+                NotifyEvent(new GamePlayEvents.PlayerShootsMissile());
             }
         }
 
@@ -141,6 +168,34 @@ namespace FlyingShooter.States
 
             AddGameObject(leftBullet);
             AddGameObject(rightBullet);
+        }
+
+        private void CreateMissiles()
+        {
+            Missile missile = new Missile(_missileTexture,
+                _exhaustTexture,
+                new Vector2(_playerSprite.Position.X + 33, _playerSprite.Position.Y - 25));
+
+            _missileList.Add(missile);
+            AddGameObject(missile);
+        }
+
+        private List<T> CleanUpProjectiles<T>(List<T> projectiles) where T : BaseGameObject
+        {
+            List<T> activeProjectiles = new List<T>();
+            foreach (T projectile in projectiles)
+            {
+                if (projectile.Position.Y > -50)
+                {
+                    activeProjectiles.Add(projectile);
+                }
+                else
+                {
+                    RemoveGameObject(projectile);
+                }
+            }
+
+            return activeProjectiles;
         }
 
         private void ClampToWindow(BaseGameObject gameObject)

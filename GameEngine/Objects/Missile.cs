@@ -45,7 +45,7 @@ namespace FlyingShooter.Objects
             }
         }
 
-        public void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
             _exhaustEmitter.Update(gameTime);
             Position = new Vector2(Position.X, Position.Y - _speed);

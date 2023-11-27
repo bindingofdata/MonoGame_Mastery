@@ -13,18 +13,23 @@ namespace Engine.Sound
     public sealed class SoundManager
     {
         #region SFX
-        private Dictionary<Type, SoundEffect> _soundBank = new Dictionary<Type, SoundEffect>();
+        private Dictionary<Type, SoundBankItem> _soundBank = new Dictionary<Type, SoundBankItem>();
 
         public void RegisterSound(BaseGameStateEvent gameEvent, SoundEffect sound)
         {
-            _soundBank.Add(gameEvent.GetType(), sound);
+            RegisterSound(gameEvent, sound, 1.0f, 0.0f, 0.0f);
+        }
+
+        public void RegisterSound(BaseGameStateEvent gameEvent, SoundEffect sound, float volume, float pitch, float pan)
+        {
+            _soundBank.Add(gameEvent.GetType(), new SoundBankItem(sound, new SoundAttributes(volume, pitch, pan)));
         }
 
         public void OnNotify(BaseGameStateEvent gameEvent)
         {
-            if (_soundBank.TryGetValue(gameEvent.GetType(), out SoundEffect sound))
+            if (_soundBank.TryGetValue(gameEvent.GetType(), out SoundBankItem soundItem))
             {
-                sound.Play();
+                soundItem.Sound.Play();
             }
         }
         #endregion
