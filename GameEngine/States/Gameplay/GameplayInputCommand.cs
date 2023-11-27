@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace FlyingShooter.States.GamePlay
 {
-    public class GameplayInputCommand : BaseInputCommand
+    public class GamePlayInputCommand : BaseInputCommand
     {
-        public sealed class GameExit : GameplayInputCommand { }
-        public sealed class PlayerMoveLeft : GameplayInputCommand { }
-        public sealed class PlayerMoveRight : GameplayInputCommand { }
-        public sealed class PlayerShoots : GameplayInputCommand { }
+        public sealed class GameExit : GamePlayInputCommand { }
+        public sealed class PlayerMoveLeft : GamePlayInputCommand { }
+        public sealed class PlayerMoveRight : GamePlayInputCommand { }
+        public sealed class PlayerShoots : GamePlayInputCommand { }
     }
 }

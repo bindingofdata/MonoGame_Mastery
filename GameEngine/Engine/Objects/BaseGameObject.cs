@@ -3,6 +3,8 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
+using System;
+
 namespace Engine.Objects
 {
     public abstract class BaseGameObject
@@ -17,6 +19,8 @@ namespace Engine.Objects
         public int ZIndex { get; set; }
         public int Width => _texture.Width;
         public int Height => _texture.Height;
+
+        public event EventHandler<BaseGameStateEvent> OnObjectChanged;
 
         public BaseGameObject(Texture2D sprite, Vector2 position) : this(sprite)
         {
@@ -35,6 +39,11 @@ namespace Engine.Objects
         public virtual void Render(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(_texture, Position, Color.White);
+        }
+
+        public void SendEvent(BaseGameStateEvent e)
+        {
+            OnObjectChanged?.Invoke(this, e);
         }
 
         protected Texture2D _texture;

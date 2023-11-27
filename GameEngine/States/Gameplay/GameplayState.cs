@@ -15,7 +15,7 @@ using Microsoft.Xna.Framework.Audio;
 
 namespace FlyingShooter.States
 {
-    internal sealed class GameplayState : BaseGameState
+    internal sealed class GamePlayState : BaseGameState
     {
         // player
         private PlayerSprite _playerSprite;
@@ -40,7 +40,7 @@ namespace FlyingShooter.States
 
         protected override void SetInputManager()
         {
-            InputManager = new InputManager(new GameplayInputMapper());
+            InputManager = new InputManager(new GamePlayInputMapper());
         }
 
         public override void LoadContent()
@@ -82,21 +82,21 @@ namespace FlyingShooter.States
         {
             InputManager.GetCommands(cmd =>
             {
-                if (cmd is GameplayInputCommand.GameExit)
+                if (cmd is GamePlayInputCommand.GameExit)
                 {
                     NotifyEvent(new BaseGameStateEvent.GameQuit());
                 }
-                if (cmd is GameplayInputCommand.PlayerMoveLeft)
+                if (cmd is GamePlayInputCommand.PlayerMoveLeft)
                 {
                     _playerSprite.MoveLeft();
                     ClampToWindow(_playerSprite);
                 }
-                if (cmd is GameplayInputCommand.PlayerMoveRight)
+                if (cmd is GamePlayInputCommand.PlayerMoveRight)
                 {
                     _playerSprite.MoveRight();
                     ClampToWindow(_playerSprite);
                 }
-                if (cmd is GameplayInputCommand.PlayerShoots)
+                if (cmd is GamePlayInputCommand.PlayerShoots)
                 {
                     Shoot(gameTime);
                 }

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace FlyingShooter.States.GamePlay
 {
-    public sealed class GameplayInputMapper : BaseInputMapper
+    public sealed class GamePlayInputMapper : BaseInputMapper
     {
         public override IEnumerable<BaseInputCommand> GetKeyboardState(KeyboardState keyboardState)
         {
@@ -18,19 +18,19 @@ namespace FlyingShooter.States.GamePlay
 
             if (keyboardState.IsKeyDown(Keys.Escape))
             {
-                commands.Add(new GameplayInputCommand.GameExit());
+                commands.Add(new GamePlayInputCommand.GameExit());
             }
             if (keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A))
             {
-                commands.Add(new GameplayInputCommand.PlayerMoveLeft());
+                commands.Add(new GamePlayInputCommand.PlayerMoveLeft());
             }
             if (keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.D))
             {
-                commands.Add(new GameplayInputCommand.PlayerMoveRight());
+                commands.Add(new GamePlayInputCommand.PlayerMoveRight());
             }
             if (keyboardState.IsKeyDown(Keys.Space))
             {
-                commands.Add(new GameplayInputCommand.PlayerShoots());
+                commands.Add(new GamePlayInputCommand.PlayerShoots());
             }
 
             return commands;

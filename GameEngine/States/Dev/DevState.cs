@@ -1,4 +1,5 @@
-﻿using FlyingShooter.Particles;
+﻿using FlyingShooter.Objects;
+using FlyingShooter.Particles;
 using FlyingShooter.States.Dev;
 
 using Microsoft.Xna.Framework;
@@ -7,7 +8,6 @@ using Engine.Particles;
 using Engine.Input;
 using Engine.State;
 using Engine.Objects;
-using FlyingShooter.Objects;
 using System.Collections.Generic;
 using System.Reflection;
 

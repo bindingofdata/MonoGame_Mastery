@@ -1,5 +1,4 @@
 ﻿using Engine.Objects;
-
 using FlyingShooter.Particles;
 
 using Microsoft.Xna.Framework;

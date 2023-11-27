@@ -1,6 +1,5 @@
 ﻿using Engine.State;
 using FlyingShooter.Objects;
-
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
@@ -19,7 +18,7 @@ namespace FlyingShooter.States
         {
             if (Keyboard.GetState().IsKeyDown(Keys.Enter))
             {
-                SwitchState(new GameplayState());
+                SwitchState(new GamePlayState());
             }
         }
 
