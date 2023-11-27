@@ -23,22 +23,25 @@ namespace FlyingShooter.Objects
         private int _missileHeight;
         private int _missileWidth;
 
-        private ExhaustEmitter _exhaustEmitter;
+        private ExhaustEmitter _exhaustEmitter = new ExhaustEmitter(null, Vector2.Zero);
 
-        public Missile(Texture2D sprite, Vector2 position) : base(sprite, position) { }
+        public Missile(Texture2D missileSprite, Vector2 position, Texture2D emitterTexture) : base(missileSprite, position)
+        {
+            float ratio = (float)_texture.Height / _texture.Width;
+            _missileWidth = 50;
+            _missileHeight = (int)(_missileWidth * ratio);
 
-        public Missile(Texture2D sprite) : base(sprite) { }
+            _exhaustEmitter = LoadEmitter(emitterTexture);
+        }
+
+        private Missile(Texture2D sprite) : base(sprite) { }
 
         public override Vector2 Position
         {
             set
             {
                 _position = value;
-                _exhaustEmitter.Position = GetEmitterPosition(_position);
-
-                float ratio = (float)_texture.Height / _texture.Width;
-                _missileWidth = 50;
-                _missileHeight = (int)(_missileWidth * ratio);
+                _exhaustEmitter.Position = GetEmitterPosition();
             }
         }
 
@@ -56,16 +59,15 @@ namespace FlyingShooter.Objects
 
             _exhaustEmitter.Render(spriteBatch);
         }
-        private ExhaustEmitter LoadEmitter(Vector2 position)
+
+        private ExhaustEmitter LoadEmitter(Texture2D exhaustTexture)
         {
-            return new ExhaustEmitter(LoadTexture, GetEmitterPosition(position))
+            return new ExhaustEmitter(exhaustTexture, GetEmitterPosition());
         }
 
-        private Vector2 GetEmitterPosition(Vector2 position)
+        private Vector2 GetEmitterPosition()
         {
-            return new Vector2(_position.X + 18, _position.Y - 10);
+            return new Vector2(_position.X + 18, _position.Y + (_missileHeight - 10));
         }
-
-        private const string ExhaustTexture = "Cloud001";
     }
 }

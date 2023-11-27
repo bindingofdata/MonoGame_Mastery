@@ -13,7 +13,7 @@ namespace FlyingShooter.States
 {
     public sealed class DevState : BaseGameState
     {
-        private BaseGameObject _testObject;
+        private Missile _testObject;
 
         public override void HandleInput(GameTime gameTime)
         {
@@ -29,9 +29,8 @@ namespace FlyingShooter.States
         public override void LoadContent()
         {
             Vector2 objectPosition = new Vector2(_viewportWidth / 2, _viewportHeight / 2);
-            _testObject = new Missile(
-                LoadTexture(MissileTexture),
-                objectPosition);
+            _testObject = new Missile(LoadTexture(MissileTexture), objectPosition, LoadTexture(ExhaustTexture));
+            //_testObject = new ExhaustEmitter(LoadTexture(ExhaustTexture), objectPosition);
 
             AddGameObject(_testObject);
         }
@@ -43,8 +42,8 @@ namespace FlyingShooter.States
 
             if (_testObject.Position.Y < -200)
             {
-                //RemoveGameObject(_exhaustEmitter);
-                _testObject.Position = new Vector2(_testObject.Position.X, _viewportHeight / 2);
+                RemoveGameObject(_testObject);
+                LoadContent();
             }
         }
 
