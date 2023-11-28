@@ -22,7 +22,7 @@ namespace FlyingShooter.Objects
         private int _missileHeight;
         private int _missileWidth;
 
-        private ExhaustEmitter _exhaustEmitter = new ExhaustEmitter(null, Vector2.Zero);
+        private Exhaust _exhaustEmitter = new Exhaust(null, Vector2.Zero);
 
         public Missile(Texture2D missileSprite, Texture2D emitterTexture, Vector2 position) : base(missileSprite, position)
         {
@@ -59,9 +59,9 @@ namespace FlyingShooter.Objects
             _exhaustEmitter.Render(spriteBatch);
         }
 
-        private ExhaustEmitter LoadEmitter(Texture2D exhaustTexture)
+        private Exhaust LoadEmitter(Texture2D exhaustTexture)
         {
-            return new ExhaustEmitter(exhaustTexture, GetEmitterPosition());
+            return new Exhaust(exhaustTexture, GetEmitterPosition());
         }
 
         private Vector2 GetEmitterPosition()

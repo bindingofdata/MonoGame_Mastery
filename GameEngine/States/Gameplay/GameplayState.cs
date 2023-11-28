@@ -12,6 +12,7 @@ using Engine;
 using Engine.State;
 using FlyingShooter.Objects;
 using Microsoft.Xna.Framework.Audio;
+using FlyingShooter.Particles;
 
 namespace FlyingShooter.States
 {
@@ -37,6 +38,17 @@ namespace FlyingShooter.States
         private TimeSpan _lastMissleShotAt = TimeSpan.Zero;
         private readonly TimeSpan _baseMissileCooldown = TimeSpan.FromSeconds(1);
         private TimeSpan _missileCooldown;
+
+        // explosion
+        private const int MaxExplosionAge = 600; //10 seconds at 60 FPS
+        private const int ExplosionActiveLength = 75;
+        private Texture2D _explosionTexture;
+        private List<Explosion> _explosionList = new List<Explosion>();
+
+        // choppers
+        private Texture2D _chopperTileMap;
+        private ChopperGenerator _chopperGenerator;
+        private List<ChopperSprite> _chopperList = new List<ChopperSprite>();
 
         protected override void SetInputManager()
         {
@@ -69,6 +81,14 @@ namespace FlyingShooter.States
             _missileList = new List<Missile>();
             _missileCooldown = _baseMissileCooldown;
             _soundManager.RegisterSound(new GamePlayEvents.PlayerShootsMissile(), LoadSound(AudioMap.MissileSFX), 0.4f, -0.2f, 0.0f);
+
+            // explosions
+            _explosionTexture = LoadTexture(TextureMap.ExplosionTexture);
+
+            // enemies
+            _chopperTileMap = LoadTexture(TextureMap.ChopperTileMap);
+            _chopperGenerator = new ChopperGenerator(_chopperTileMap, 4, AddChopper);
+            _chopperGenerator.GenerateChoppers();
 
             // bgm
             _soundManager.SetSoundtrack(new List<SoundEffectInstance>()
@@ -110,7 +130,7 @@ namespace FlyingShooter.States
             {
                 bullet.MoveUp();
             }
-            _bulletList = CleanUpProjectiles(_bulletList);
+            _bulletList = CleanUpObjectList(_bulletList);
 
             if (gameTime.TotalGameTime - _lastBulletShotAt > _bulletCooldown)
             {
@@ -122,11 +142,65 @@ namespace FlyingShooter.States
             {
                 missile.Update(gameTime);
             }
-            _missileList = CleanUpProjectiles(_missileList);
+            _missileList = CleanUpObjectList(_missileList);
 
             if (gameTime.TotalGameTime - _lastMissleShotAt > _missileCooldown)
             {
                 _isShootingMissile = false;
+            }
+
+            // choppers
+            foreach (ChopperSprite chopper in _chopperList)
+            {
+                chopper.Update(gameTime);
+            }
+            _chopperList = CleanUpObjectList(_chopperList);
+        }
+
+        private void AddChopper(ChopperSprite chopper)
+        {
+            chopper.OnObjectChanged += _chopperSprite_OnObjectChanged;
+            _chopperList.Add(chopper);
+            AddGameObject(chopper);
+        }
+
+        private void _chopperSprite_OnObjectChanged(object sender, BaseGameStateEvent e)
+        {
+            ChopperSprite chopper = sender as ChopperSprite;
+            switch (e)
+            {
+                case GamePlayEvents.EnemyLostLife ge:
+                    if (ge.CurrentLife <= 0)
+                    {
+                        AddExplosion(new Vector2(chopper.Position.X - 40, chopper.Position.Y - 40));
+                        chopper.Destroy();
+                    }
+                    break;
+            }
+        }
+
+        private void AddExplosion(Vector2 position)
+        {
+            Explosion explosion = new Explosion(_explosionTexture, position);
+            AddGameObject(explosion);
+            _explosionList.Add(explosion);
+        }
+
+        private void UpdateExplosions(GameTime gameTime)
+        {
+            foreach (Explosion explosion in _explosionList)
+            {
+                explosion.Update(gameTime);
+
+                if (explosion.Age > ExplosionActiveLength)
+                {
+                    explosion.Deactivate();
+                }
+
+                if (explosion.Age > MaxExplosionAge)
+                {
+                    explosion.Destroy();
+                }
             }
         }
 
@@ -180,7 +254,7 @@ namespace FlyingShooter.States
             AddGameObject(missile);
         }
 
-        private List<T> CleanUpProjectiles<T>(List<T> projectiles) where T : BaseGameObject
+        private List<T> CleanUpObjectList<T>(List<T> projectiles) where T : BaseGameObject
         {
             List<T> activeProjectiles = new List<T>();
             foreach (T projectile in projectiles)

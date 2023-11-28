@@ -24,7 +24,7 @@ namespace FlyingShooter.States
 
         public override void LoadContent()
         {
-            AddGameObject(new SplashImage(LoadTexture(TextureMap.SlpashScreenBG)));
+            AddGameObject(new SplashImage(LoadTexture(TextureMap.SplashScreenBG)));
         }
 
         public override void UpdateGameState(GameTime gameTime)

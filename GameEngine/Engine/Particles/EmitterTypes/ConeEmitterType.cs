@@ -1,11 +1,10 @@
 ﻿using Engine;
 using Engine.Particles;
-
 using Microsoft.Xna.Framework;
 
 using System;
 
-namespace FlyingShooter.Particles
+namespace Engine.Particles
 {
     public sealed class ConeEmitterType : IEmitterType
     {
@@ -22,7 +21,7 @@ namespace FlyingShooter.Particles
 
         public Vector2 GetParticleDirection()
         {
-            float angle = (float)Math.Atan2(Direction.Y,Direction.X);
+            float angle = (float)Math.Atan2(Direction.Y, Direction.X);
             float halfSpread = Spread / 2.0f;
             float newAngle = _random.NextFloat(angle - halfSpread, angle + halfSpread);
             Vector2 particleDirection = new Vector2(

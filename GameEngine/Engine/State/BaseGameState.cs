@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace Engine.State
 {
@@ -103,6 +104,10 @@ namespace Engine.State
             foreach (var gameObject in _gameObjects
                 .OrderBy(gameObject => gameObject.ZIndex))
             {
+                if (Keyboard.GetState().IsKeyDown(Keys.LeftControl))
+                {
+                    gameObject.RenderBoundingBoxes(spriteBatch);
+                }
                 gameObject.Render(spriteBatch);
             }
         }

@@ -15,14 +15,14 @@ namespace FlyingShooter.States
 {
     public sealed class DevState : BaseGameState
     {
-        private ExhaustEmitter _exhaustEmitter;
+        private Exhaust _exhaustEmitter;
         private IList<Missile> _missiles = new List<Missile>();
         private PlayerSprite _playerSprite;
 
         public override void LoadContent()
         {
             Vector2 exhaustPosition = new Vector2(_viewportWidth / 2, _viewportHeight / 2);
-            _exhaustEmitter = new ExhaustEmitter(LoadTexture(TextureMap.ExhaustTexture), exhaustPosition);
+            _exhaustEmitter = new Exhaust(LoadTexture(TextureMap.ExhaustTexture), exhaustPosition);
             AddGameObject(_exhaustEmitter);
 
             _playerSprite = new PlayerSprite(LoadTexture(TextureMap.PlayerFighterTexture));

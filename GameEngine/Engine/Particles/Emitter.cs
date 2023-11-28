@@ -19,6 +19,9 @@ namespace Engine.Particles
         private IEmitterType _emitterType;
         private int _particlesEmittedPerUpdate;
         private int _maxParticleCount;
+        private bool _active = true;
+
+        public int Age { get; set; }
 
         protected Emitter(EmitterOptions emitterOptions) : base(emitterOptions.Texture, emitterOptions.Position)
         {
@@ -26,11 +29,15 @@ namespace Engine.Particles
             _emitterType = emitterOptions.EmitterType;
             _particlesEmittedPerUpdate = emitterOptions.ParticlesPerUpdate;
             _maxParticleCount = emitterOptions.MaxParticleCount;
+            Age = 0;
         }
 
         public override void Update(GameTime gameTime)
         {
-            EmitParticles();
+            if (_active)
+            {
+                EmitParticles();
+            }
 
             LinkedListNode<Particle> currentNode = _activeParticles.First;
             while (currentNode != null)
@@ -42,6 +49,8 @@ namespace Engine.Particles
                 }
                 currentNode = currentNode.Next;
             }
+
+            Age++;
         }
 
         public override void Render(SpriteBatch spriteBatch)
@@ -60,6 +69,11 @@ namespace Engine.Particles
                     effects: SpriteEffects.None,
                     layerDepth: ZIndex);
             }
+        }
+
+        public void Deactivate()
+        {
+            _active = false;
         }
 
         private void EmitParticles()
