@@ -13,6 +13,7 @@ using Engine.State;
 using FlyingShooter.Objects;
 using Microsoft.Xna.Framework.Audio;
 using FlyingShooter.Particles;
+using System.Threading.Tasks;
 
 namespace FlyingShooter.States
 {
@@ -21,10 +22,11 @@ namespace FlyingShooter.States
         // player
         private PlayerSprite _playerSprite;
         private float _playerSpriteOffset;
+        private bool _playerDead;
 
         // bullets
         private Texture2D _bulletTexture;
-        private List<BulletSprite> _bulletList;
+        private List<BulletSprite> _bulletList = new List<BulletSprite>();
         private bool _isShootingBullet;
         private TimeSpan _lastBulletShotAt = TimeSpan.Zero;
         private readonly TimeSpan _baseBulletCooldown = TimeSpan.FromSeconds(0.2);
@@ -33,7 +35,7 @@ namespace FlyingShooter.States
         // missiles
         private Texture2D _missileTexture;
         private Texture2D _exhaustTexture;
-        private List<Missile> _missileList;
+        private List<Missile> _missileList = new List<Missile>();
         private bool _isShootingMissile;
         private TimeSpan _lastMissleShotAt = TimeSpan.Zero;
         private readonly TimeSpan _baseMissileCooldown = TimeSpan.FromSeconds(1);
@@ -57,38 +59,20 @@ namespace FlyingShooter.States
 
         public override void LoadContent()
         {
+            // sprites/textures
+            _playerSprite = new PlayerSprite(LoadTexture(TextureMap.PlayerFighterTexture));
+            _bulletTexture = LoadTexture(TextureMap.BulletTexture);
+            _missileTexture = LoadTexture(TextureMap.MissileTexture);
+            _exhaustTexture = LoadTexture(TextureMap.ExhaustTexture);
+            _explosionTexture = LoadTexture(TextureMap.ExplosionTexture);
+            _chopperTileMap = LoadTexture(TextureMap.ChopperTileMap);
+
             // scrolling background
             AddGameObject(new TerrainBackground(LoadTexture(TextureMap.GamePlayBG), Vector2.Zero));
 
-            // player sprite
-            _playerSprite = new PlayerSprite(LoadTexture(TextureMap.PlayerFighterTexture));
-            _playerSpriteOffset = _playerSprite.Width / 2f;
-            int startingX = _viewportWidth / 2 - (int)_playerSpriteOffset;
-            int startingY = _viewportHeight - _playerSprite.Height - 30;
-            _playerSprite.Position = new Vector2(startingX, startingY);
-
-            AddGameObject(_playerSprite);
-
-            // player bullets
-            _bulletTexture = LoadTexture(TextureMap.BulletTexture);
-            _bulletList = new List<BulletSprite>();
-            _bulletCooldown = _baseBulletCooldown;
+            // sfx
             _soundManager.RegisterSound(new GamePlayEvents.PlayerShootsBullets(), LoadSound(AudioMap.BulletSFX));
-
-            // player missiles
-            _missileTexture = LoadTexture(TextureMap.MissileTexture);
-            _exhaustTexture = LoadTexture(TextureMap.ExhaustTexture);
-            _missileList = new List<Missile>();
-            _missileCooldown = _baseMissileCooldown;
             _soundManager.RegisterSound(new GamePlayEvents.PlayerShootsMissile(), LoadSound(AudioMap.MissileSFX), 0.4f, -0.2f, 0.0f);
-
-            // explosions
-            _explosionTexture = LoadTexture(TextureMap.ExplosionTexture);
-
-            // enemies
-            _chopperTileMap = LoadTexture(TextureMap.ChopperTileMap);
-            _chopperGenerator = new ChopperGenerator(_chopperTileMap, 4, AddChopper);
-            _chopperGenerator.GenerateChoppers();
 
             // bgm
             _soundManager.SetSoundtrack(new List<SoundEffectInstance>()
@@ -96,6 +80,58 @@ namespace FlyingShooter.States
                 LoadMusic(AudioMap.GamePlayBGM_01).CreateInstance(),
                 LoadMusic(AudioMap.GamePlayBGM_02).CreateInstance(),
             });
+
+            ResetGame();
+        }
+
+        private void ResetGame()
+        {
+            if (_chopperGenerator != null)
+            {
+                _chopperGenerator.StopGenerating();
+            }
+
+            // player bullets
+            foreach (BulletSprite bullet in _bulletList)
+            {
+                RemoveGameObject(bullet);
+            }
+            _bulletList = new List<BulletSprite>();
+            _bulletCooldown = _baseBulletCooldown;
+
+            // player missiles
+            foreach (Missile missile in _missileList)
+            {
+                RemoveGameObject(missile);
+            }
+            _missileList = new List<Missile>();
+            _missileCooldown = _baseMissileCooldown;
+
+            // enemies
+            foreach (ChopperSprite chopper in _chopperList)
+            {
+                RemoveGameObject(chopper);
+            }
+            _chopperList = new List<ChopperSprite>();
+
+            // explosions!
+            foreach (var explosion in _explosionList)
+            {
+                RemoveGameObject(explosion);
+            }
+            _explosionList = new List<Explosion>();
+
+            // player
+            AddGameObject(_playerSprite);
+            _playerSpriteOffset = _playerSprite.Width / 2f;
+            int startingX = _viewportWidth / 2 - (int)_playerSpriteOffset;
+            int startingY = _viewportHeight - _playerSprite.Height - 30;
+            _playerSprite.Position = new Vector2(startingX, startingY);
+            _playerDead = false;
+
+            // start spawning
+            _chopperGenerator = new ChopperGenerator(_chopperTileMap, 4, AddChopper);
+            _chopperGenerator.GenerateChoppers();
         }
 
         public override void HandleInput(GameTime gameTime)
@@ -155,6 +191,52 @@ namespace FlyingShooter.States
                 chopper.Update(gameTime);
             }
             _chopperList = CleanUpObjectList(_chopperList);
+
+            DetectCollisions();
+        }
+
+        private void DetectCollisions()
+        {
+            AABBCollisionDetector<BulletSprite, ChopperSprite> bulletCollisionDetector =
+                new AABBCollisionDetector<BulletSprite, ChopperSprite>(_bulletList);
+
+            AABBCollisionDetector<Missile, ChopperSprite> missileCollisionDetector =
+                new AABBCollisionDetector<Missile, ChopperSprite>(_missileList);
+
+            AABBCollisionDetector<ChopperSprite, PlayerSprite> playerCollisionDetector =
+                new AABBCollisionDetector<ChopperSprite, PlayerSprite>(_chopperList);
+
+            bulletCollisionDetector.DetectCollisions(_chopperList, (bullet, chopper) =>
+            {
+                GamePlayEvents.EnemyHitBy hitEvent = new GamePlayEvents.EnemyHitBy(bullet);
+                chopper.OnNotify(hitEvent);
+                _soundManager.OnNotify(hitEvent);
+                bullet.Destroy();
+            });
+
+            missileCollisionDetector.DetectCollisions(_chopperList, (missile, chopper) =>
+            {
+                GamePlayEvents.EnemyHitBy hitEvent = new GamePlayEvents.EnemyHitBy(missile);
+                chopper.OnNotify(hitEvent);
+                _soundManager.OnNotify(hitEvent);
+                missile.Destroy();
+            });
+
+            playerCollisionDetector.DetectCollisions(_playerSprite, (chopper, player) =>
+            {
+                KillPlayer();
+            });
+        }
+
+        private async void KillPlayer()
+        {
+            _playerDead = true;
+
+            AddExplosion(_playerSprite.Position);
+            RemoveGameObject(_playerSprite);
+
+            await Task.Delay(TimeSpan.FromSeconds(2));
+            ResetGame();
         }
 
         private void AddChopper(ChopperSprite chopper)
@@ -247,8 +329,8 @@ namespace FlyingShooter.States
         private void CreateMissiles()
         {
             Missile missile = new Missile(_missileTexture,
-                _exhaustTexture,
-                new Vector2(_playerSprite.Position.X + 33, _playerSprite.Position.Y - 25));
+                _exhaustTexture);
+            missile.Position = new Vector2(_playerSprite.Position.X + 33, _playerSprite.Position.Y - 25);
 
             _missileList.Add(missile);
             AddGameObject(missile);

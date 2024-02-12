@@ -43,8 +43,9 @@ namespace FlyingShooter.States
                 {
                     Missile missile = new Missile(
                         LoadTexture(TextureMap.MissileTexture),
-                        LoadTexture(TextureMap.ExhaustTexture),
-                        new Vector2(_playerSprite.Position.X, _playerSprite.Position.Y - 25));
+                        LoadTexture(TextureMap.ExhaustTexture));
+                    missile.Position = new Vector2(_playerSprite.Position.X, _playerSprite.Position.Y - 25);
+
                     _missiles.Add(missile);
                     AddGameObject(missile);
                 }

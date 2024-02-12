@@ -52,9 +52,19 @@ namespace FlyingShooter.Objects
         private const int ChopperBladeX = ChopperWidth / 2;
         private const int ChopperBladeY = 34;
 
+        // Bounding Box Defaults
+        private const int BoundingBoxX = -16;
+        private const int BoundingBoxY = -63;
+        private const int BoundingBoxWidth = 34;
+        private const int BoundingBoxHeight = 98;
+
         public ChopperSprite(Texture2D sprite, ChopperColor chopperColor, List<PathNode> path) : base(sprite)
         {
             _path = path;
+            AddBoundingBox(new Engine.Objects.BoundingBox(
+                new Vector2(BoundingBoxX, BoundingBoxY),
+                BoundingBoxWidth,
+                BoundingBoxHeight));
         }
 
         public override void Update(GameTime gameTime)

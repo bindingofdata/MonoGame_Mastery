@@ -21,6 +21,7 @@ namespace Engine.State
         protected SoundManager _soundManager = new SoundManager();
         protected int _viewportHeight;
         protected int _viewportWidth;
+        protected bool _debug = false;
 
         protected InputManager InputManager { get; set; }
 
@@ -67,6 +68,7 @@ namespace Engine.State
         {
             UpdateGameState(gameTime);
             _soundManager.PlaySoundtrack();
+            _debug = Keyboard.GetState().IsKeyDown(Keys.LeftControl);
         }
 
         // event handlers
@@ -104,7 +106,7 @@ namespace Engine.State
             foreach (var gameObject in _gameObjects
                 .OrderBy(gameObject => gameObject.ZIndex))
             {
-                if (Keyboard.GetState().IsKeyDown(Keys.LeftControl))
+                if (_debug)
                 {
                     gameObject.RenderBoundingBoxes(spriteBatch);
                 }

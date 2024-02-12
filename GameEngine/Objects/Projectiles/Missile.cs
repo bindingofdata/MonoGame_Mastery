@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace FlyingShooter.Objects
 {
-    internal sealed class Missile : BaseGameObject
+    internal sealed class Missile : BaseGameObject, IDamageDealer
     {
         private const float StartSpeed = 0.5f;
         private const float Acceleration = 0.15f;
@@ -21,16 +21,30 @@ namespace FlyingShooter.Objects
         // track scaled size
         private int _missileHeight;
         private int _missileWidth;
+        private const int BaseMissileWidth = 50;
+
+        // Bounding Box Defaults
+        private const int BoundingBoxX = 352;
+        private const int BoundingBoxY = 7;
+        private const int BoundingBoxWidth = 150;
+        private const int BoundingBoxHeight = 500;
 
         private Exhaust _exhaustEmitter = new Exhaust(null, Vector2.Zero);
 
-        public Missile(Texture2D missileSprite, Texture2D emitterTexture, Vector2 position) : base(missileSprite, position)
+        public int Damage => 25;
+
+        public Missile(Texture2D missileSprite, Texture2D emitterTexture) : base(missileSprite)
         {
+            _exhaustEmitter = LoadEmitter(emitterTexture);
+
             float ratio = (float)_texture.Height / _texture.Width;
-            _missileWidth = 50;
+            _missileWidth = BaseMissileWidth;
             _missileHeight = (int)(_missileWidth * ratio);
 
-            _exhaustEmitter = LoadEmitter(emitterTexture);
+            ratio = (float)_missileWidth / _texture.Width;
+            AddBoundingBox(new Engine.Objects.BoundingBox(
+                new Vector2(BoundingBoxX * ratio, BoundingBoxY * ratio),
+                BoundingBoxWidth * ratio, BoundingBoxHeight * ratio));
         }
 
         private Missile(Texture2D sprite) : base(sprite) { }
@@ -39,8 +53,8 @@ namespace FlyingShooter.Objects
         {
             set
             {
-                _position = value;
                 _exhaustEmitter.Position = GetEmitterPosition();
+                base.Position = value;
             }
         }
 

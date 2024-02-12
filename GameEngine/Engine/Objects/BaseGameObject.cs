@@ -10,9 +10,13 @@ namespace Engine.Objects
 {
     public abstract class BaseGameObject
     {
+        // Sprite
         protected Texture2D _texture;
         protected Texture2D _boundingBoxTexture;
+        public int Width => _texture.Width;
+        public int Height => _texture.Height;
 
+        // Location
         protected Vector2 _position = Vector2.One;
         public virtual Vector2 Position
         {
@@ -29,13 +33,11 @@ namespace Engine.Objects
                 }
             }
         }
+        public int ZIndex { get; set; }
 
+        // Bounding Boxes
         protected List<BoundingBox> _boundingBoxes = new List<BoundingBox>();
         public List<BoundingBox> BoundingBoxes { get { return _boundingBoxes; } }
-
-        public int ZIndex { get; set; }
-        public int Width => _texture.Width;
-        public int Height => _texture.Height;
 
         public event EventHandler<BaseGameStateEvent> OnObjectChanged;
 
@@ -91,7 +93,7 @@ namespace Engine.Objects
         private void CreateBoundingBoxTexture(GraphicsDevice graphicsDevice)
         {
             _boundingBoxTexture = new Texture2D(graphicsDevice, 1, 1);
-            _boundingBoxTexture.SetData<Color>(new Color[] { Color.White });
+            _boundingBoxTexture.SetData<Color>(new Color[] { Color.Red });
         }
     }
 }

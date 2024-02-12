@@ -12,16 +12,38 @@ namespace FlyingShooter.Objects
 {
     internal sealed class PlayerSprite : BaseGameObject
     {
-        public PlayerSprite(Texture2D sprite) : base(sprite) { }
+        // Bounding Box Defaults
+        private const int BoundingBox01X = 29;
+        private const int BoundingBox01Y = 2;
+        private const int BoundingBox01Width = 57;
+        private const int BoundingBox01Height = 147;
+
+        private const int BoundingBox02X = 2;
+        private const int BoundingBox02Y = 77;
+        private const int BoundingBox02Width = 111;
+        private const int BoundingBox02Height = 37;
+
+        public PlayerSprite(Texture2D sprite) : base(sprite)
+        {
+            AddBoundingBox(new Engine.Objects.BoundingBox(
+                new Vector2(BoundingBox01X, BoundingBox01Y),
+                BoundingBox01Width,
+                BoundingBox01Height));
+
+            AddBoundingBox(new Engine.Objects.BoundingBox(
+                new Vector2(BoundingBox02X, BoundingBox02Y),
+                BoundingBox02Width,
+                BoundingBox02Height));
+        }
 
         public void MoveLeft()
         {
-            _position.X -= BASE_SPEED;
+            Position = new Vector2(Position.X - BASE_SPEED, Position.Y);
         }
 
         public void MoveRight()
         {
-            _position.X += BASE_SPEED;
+            Position = new Vector2(Position.X + BASE_SPEED, Position.Y);
         }
 
         private const float BASE_SPEED = 10.0f;
